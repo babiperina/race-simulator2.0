@@ -14,6 +14,7 @@ public class Carro implements Runnable {
     private boolean parou = false;
     private double theta = 0;
     private String cor;
+    private int tempoPitStop;
 
     public Carro(int qtdeVolta, double x, double y) {
         this.qtdeVolta = qtdeVolta;
@@ -22,6 +23,7 @@ public class Carro implements Runnable {
         setVelocidade();
         setCor();
         parouPitStop = false;
+        tempoPitStop = 20*20;
     }
 
     @Override
@@ -117,20 +119,28 @@ public class Carro implements Runnable {
     }
 
     public void correr() {
-        theta += 02 * Math.PI / velocidade;
 
-        setX(Constantes.centroX + Constantes.radiusX * Math.cos(theta));
-        setY(Constantes.centroY - Constantes.radiusY * Math.sin(theta));
+        if (x <= 188 && x >= 154 && y >= 66 && y <= 120 && !parouPitStop) {
+            tempoPitStop-=10;
+            if(tempoPitStop <= 0){
+                parouPitStop = true;
+            }
+        } else {
+            theta += 02 * Math.PI / velocidade;
 
-        if (theta >= 2 * Math.PI) {
-            theta = 0;
-            setX(Constantes.centroX + Constantes.radiusX * Math.cos(theta - (02 * Math.PI / 50)));
-            setY(Constantes.centroY + Constantes.radiusX * Math.sin(theta - (02 * Math.PI / 50)));
-            qtdeVolta--;
-            correr();
+
+            setX(Constantes.centroX + Constantes.radiusX * Math.cos(theta));
+            setY(Constantes.centroY - Constantes.radiusY * Math.sin(theta));
+
+            if (theta >= 2 * Math.PI) {
+                theta = 0;
+                setX(Constantes.centroX + Constantes.radiusX * Math.cos(theta - (02 * Math.PI / 50)));
+                setY(Constantes.centroY + Constantes.radiusX * Math.sin(theta - (02 * Math.PI / 50)));
+                qtdeVolta--;
+                correr();
+            }
+            setVelocidade();
         }
-
-        setVelocidade();
     }
 
     public String getRandomColor() {
